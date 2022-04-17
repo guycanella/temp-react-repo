@@ -1,4 +1,4 @@
-import React, { Component } from "react"
+import React, { useCallback, useEffect, useState } from "react"
 
 import { loadPosts } from "../../../utils/loadPosts"
 
@@ -7,79 +7,73 @@ import Posts from "../../Posts"
 import LoadButton from "../../LoadButton"
 import SearchInput from "../../SearchInput"
 
-class Home extends Component {
-  state = {
-    posts: [],
-    allPosts: [],
-    page: 0,
-    postsPerPage: 10,
-    searchValue: '',
-  }
+const Home = () => {
+  const [posts, setPosts] = useState([])
+  const [allPosts, setAllPosts] = useState([])
+  const [page, setPage] = useState(0)
+  const [postsPerPage] = useState(10)
+  const [searchValue, setSearchValue] = useState("")
 
-  async componentDidMount() {
-    await this.loading()
-  }
+  const noMorePosts = page + postsPerPage >= allPosts.length
 
-  loading = async () => {
-    const { page, postsPerPage } = this.state
+  const filteredPosts = searchValue
+    ? allPosts.filter((post) => {
+        return post.title.toLowerCase().includes(searchValue.toLowerCase())
+      })
+    : posts
+
+  const loading = useCallback(async (page, postsPerPage) => {
     const postsAndPhotos = await loadPosts()
 
-    this.setState({
-      posts: postsAndPhotos.slice(page, postsPerPage),
-      allPosts: postsAndPhotos,
-    })
-  }
+    setPosts(postsAndPhotos.slice(page, postsPerPage))
+    setAllPosts(postsAndPhotos)
+  }, [])
 
-  loadMorePosts = () => {
-    const { page, postsPerPage, allPosts, posts } = this.state
+  useEffect(() => {
+    loading(0, postsPerPage)
+  }, [loading, postsPerPage])
 
+  const loadMorePosts = () => {
     const nextPage = page + postsPerPage
     const nextPosts = allPosts.slice(nextPage, nextPage + postsPerPage)
     posts.push(...nextPosts)
 
-    this.setState({ posts, page: nextPage })
+    setPosts(posts)
+    setPage(nextPage)
   }
 
-  handleChange = (e) => {
+  const handleChange = (e) => {
     const { value } = e.target
-    this.setState({ searchValue: value })
+    setSearchValue(value)
   }
 
-  render() {
-    const { posts, page, postsPerPage, allPosts, searchValue } = this.state
-    const noMorePosts = page + postsPerPage >= allPosts.length
+  return (
+    <section className="container">
+      {!!searchValue && (
+        <>
+          <h1>Search value: {searchValue}</h1>
+          <br />
+          <br />
+        </>
+      )}
 
-    const filteredPosts = searchValue ? (
-      allPosts.filter((post) => {
-        return post.title.toLowerCase().includes(searchValue.toLowerCase())
-      })
-    ) : posts
+      <SearchInput onchange={handleChange} searching={searchValue} />
 
-    return (
-      <section className="container">
-        {!!searchValue && (
-          <>
-            <h1>Search value: {searchValue}</h1><br /><br />
-          </>
-        )}
-        
-        <SearchInput onchange={this.handleChange} searching={searchValue} />
+      {filteredPosts.length ? (
+        <Posts posts={filteredPosts} />
+      ) : (
+        <p>Não existem posts</p>
+      )}
 
-        {filteredPosts.length 
-          ? <Posts posts={filteredPosts} /> 
-          : <p>Não existem posts</p>
-        }
-        
-        {!searchValue && (
-          <LoadButton
-            text="Load more posts"
-            onclick={this.loadMorePosts}
-            disabled={noMorePosts}
-          />
-        )}
-      </section>
-    )
-  }
+      {!searchValue && (
+        <LoadButton
+          text="Load more posts"
+          onclick={loadMorePosts}
+          disabled={noMorePosts}
+        />
+      )}
+    </section>
+  )
 }
 
 export default Home
