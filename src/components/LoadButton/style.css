@@ -1,0 +1,23 @@
+.load-button {
+    color: #fff;
+    margin-top: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-transform: uppercase;
+    font-weight: 700;
+    border-radius: 5px;
+    border: none;
+    background-color: #0082c3;
+    cursor: pointer;
+}
+
+.load-button:hover {
+    background-color: #0082c399;
+}
+
+.load-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
