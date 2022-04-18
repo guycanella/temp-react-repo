@@ -2,10 +2,11 @@ import React, { useCallback, useEffect, useState } from "react"
 
 import { loadPosts } from "../../../utils/loadPosts"
 
-import "./style.css"
 import Posts from "../../Posts"
 import LoadButton from "../../LoadButton"
 import SearchInput from "../../SearchInput"
+
+import "./style.css"
 
 const Home = () => {
   const [posts, setPosts] = useState([])
