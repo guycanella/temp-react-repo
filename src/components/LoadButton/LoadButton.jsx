@@ -3,9 +3,7 @@ import PropTypes from 'prop-types'
 
 import './style.css'
 
-const LoadButton = (props) => {
-  const { text, onclick, disabled } = props
-
+const LoadButton = ({ text, onclick, disabled = false }) => {
   return (
     <button
       className="load-button"
@@ -17,10 +15,14 @@ const LoadButton = (props) => {
   )
 }
 
+LoadButton.defaultProps = {
+	disabled: false
+}
+
 LoadButton.propTypes = {
 	text: PropTypes.string.isRequired,
-	onclick: PropTypes.any.isRequired,
-  disabled: PropTypes.bool.isRequired
+	onclick: PropTypes.func.isRequired,
+  disabled: PropTypes.bool
 }
 
 export default LoadButton

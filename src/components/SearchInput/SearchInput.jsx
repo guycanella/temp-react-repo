@@ -15,8 +15,8 @@ const SearchInput = ({ onchange, searching }) => {
 }
 
 SearchInput.propTypes = {
-	onchange: PropTypes.any.isRequired,
-	searching: PropTypes.any.isRequired
+	onchange: PropTypes.func.isRequired,
+	searching: PropTypes.string.isRequired
 }
 
 export default SearchInput

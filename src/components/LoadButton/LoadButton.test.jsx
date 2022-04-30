@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { fireEvent, render, screen } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import LoadButton from "./LoadButton"
 
 describe('<LoadButton />', () => {
